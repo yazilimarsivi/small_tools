@@ -1,15 +1,22 @@
 <?php
-$arr = ["byte","kb","mb","gb","tb"]; // İsteğinize göre içeriği artırıp azaltabilirsiniz.
-$carpan = 1024; // IEEE 1541'e göre 2^10 katları olarak alınmıştır.
-$boyut = 1024; // Bayt cinsinden değer giriniz.
+function formatBytes($boyut, $ondalik = 2) {
+  
+    // İsteğinize göre içeriği artırıp azaltabilirsiniz.
+    $birim = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
+  
+    // Boyutu 0 döndürür
+    if ($boyut <= 0) return '0 B';
 
-for($i = 0; $i < count($arr); $i++){
-  $islem = pow($carpan , $i);
-  if ($boyut < 1024){
-    print $boyut." ".$arr[$i];
-    break;
-  }elseif ( $boyut < pow($carpan,$i+1) ){
-  print round( ($boyut / $islem), 2)." ".$arr[$i];
-  break;}
+    // Logaritma kullanarak hangi birimde olduğunu bulur (Taban 1024 IEEE 1541)
+    $i = floor(log($boyut, 1024));
+    
+    // Dizinin sınırlarını aşmamak için kontrol
+    $i = min($i, count($birim) - 1);
+
+    // Sonuç değeri
+    return round($boyut / pow(1024, $i), $ondalik)
+      . ' ' . $birim[$i];
 }
-?>
+
+$boyut = pow(1024, 2) * 5.5; // 5.5 MB örneği (Bayt cinsinden değer)
+echo formatBytes($boyut); // Çıktı: 5.5 MB
